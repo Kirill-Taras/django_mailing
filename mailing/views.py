@@ -1,7 +1,9 @@
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from mailing.models import Client, Message, Mailing
+from mailing.services import send_mailing
+from django.contrib import messages
 
 """Главная страница"""
 def home_view(request):
@@ -90,3 +92,14 @@ class MailingDetailView(DetailView):
     model = Mailing
     template_name = 'mailing/mailing_detail.html'
     context_object_name = 'mailing'
+
+#Функция для отправки рассылки
+def send_mailing_view(request, pk):
+    mailing = get_object_or_404(Mailing, pk=pk)
+    if mailing.status in ['created', 'started']:
+        try:
+            send_mailing(mailing)
+            messages.success(request, 'Рассылка успешно отправлена!')
+        except Exception as e:
+            messages.error(request, f'Ошибка: {e}')
+    return redirect('mailing:mailing_detail', pk=pk)
