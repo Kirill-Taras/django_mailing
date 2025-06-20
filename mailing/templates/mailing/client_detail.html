@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Информация о клиенте</h2>
+    <p><strong>Email:</strong> {{ client.email }}</p>
+    <p><strong>Ф. И. О.:</strong> {{ client.full_name }}</p>
+    <p><strong>Комментарий:</strong> {{ client.comment }}</p>
+    <a href="{% url 'clients:update' client.pk %}" class="btn btn-primary">✏️ Редактировать</a>
+    <a href="{% url 'clients:delete' client.pk %}" class="btn btn-danger">🗑️ Удалить</a>
+    <a href="{% url 'clients:list' %}" class="btn btn-secondary">← Назад</a>
+</div>
+{% endblock %}

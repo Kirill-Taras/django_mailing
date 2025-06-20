@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="slogan text-center mb-5">
+        <h1>MailSender — удобный инструмент для email-рассылок</h1>
+        <p class="lead">Просто. Надежно. Эффективно.</p>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="stat-block text-center p-4 bg-light rounded">
+                <h3>{{ total_mailings }}</h3>
+                <p>Всего рассылок</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-block text-center p-4 bg-light rounded">
+                <h3>{{ active_mailings }}</h3>
+                <p>Активных рассылок</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-block text-center p-4 bg-light rounded">
+                <h3>{{ unique_clients }}</h3>
+                <p>Уникальных получателей</p>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <div class="feature-block">
+                <h3>Простота использования</h3>
+                <img src="https://via.placeholder.com/600x300?text=Интуитивный+интерфейс" alt="Интерфейс" class="feature-img">
+                <p class="mt-3">Наш сервис понятен даже новичкам. Создавайте рассылки за несколько кликов!</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="feature-block">
+                <h3>Мощная аналитика</h3>
+                <img src="https://via.placeholder.com/600x300?text=Детальная+статистика" alt="Статистика" class="feature-img">
+                <p class="mt-3">Отслеживайте открытия писем и клики по ссылкам для улучшения эффективности.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
