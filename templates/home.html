@@ -1,35 +1,30 @@
 {% extends 'base.html' %}
-
 {% block content %}
-    <!-- Слоган -->
-    <div class="slogan">
+<div class="container mt-5">
+    <div class="slogan text-center mb-5">
         <h1>MailSender — удобный инструмент для email-рассылок</h1>
         <p class="lead">Просто. Надежно. Эффективно.</p>
     </div>
-
-    <!-- Блоки со статистикой -->
     <div class="row">
         <div class="col-md-4">
-            <div class="stat-block">
-                <h3>10,000+</h3>
-                <p>довольных клиентов используют наш сервис</p>
+            <div class="stat-block text-center p-4 bg-light rounded">
+                <h3>{{ total_mailings }}</h3>
+                <p>Всего рассылок</p>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="stat-block">
-                <h3>1,000,000+</h3>
-                <p>писем отправлено за последний месяц</p>
+            <div class="stat-block text-center p-4 bg-light rounded">
+                <h3>{{ active_mailings }}</h3>
+                <p>Активных рассылок</p>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="stat-block">
-                <h3>98.7%</h3>
-                <p>доставляемость писем</p>
+            <div class="stat-block text-center p-4 bg-light rounded">
+                <h3>{{ unique_clients }}</h3>
+                <p>Уникальных получателей</p>
             </div>
         </div>
     </div>
-
-    <!-- Блоки для картинок -->
     <div class="row mt-5">
         <div class="col-md-6">
             <div class="feature-block">
@@ -46,4 +41,5 @@
             </div>
         </div>
     </div>
+</div>
 {% endblock %}

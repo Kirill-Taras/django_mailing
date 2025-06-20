@@ -7,7 +7,16 @@ from django.contrib import messages
 
 """Главная страница"""
 def home_view(request):
-    return render(request, 'home.html')
+    total_mailings = Mailing.objects.count()
+    active_mailings = Mailing.objects.filter(status='started').count()
+    unique_clients = Client.objects.distinct().count()
+
+    context = {
+        'total_mailings': total_mailings,
+        'active_mailings': active_mailings,
+        'unique_clients': unique_clients,
+    }
+    return render(request, 'home.html', context)
 
 """Страницы для работы с клиентами"""
 class ClientListView(ListView):
@@ -93,7 +102,7 @@ class MailingDetailView(DetailView):
     template_name = 'mailing/mailing_detail.html'
     context_object_name = 'mailing'
 
-#Функция для отправки рассылки
+"""Функция для отправки рассылки"""
 def send_mailing_view(request, pk):
     mailing = get_object_or_404(Mailing, pk=pk)
     if mailing.status in ['created', 'started']:
