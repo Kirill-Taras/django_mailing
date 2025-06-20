@@ -16,10 +16,10 @@ def send_mailing(mailing):
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[client.email],
             )
-            status = 'success'
-            response = 'Письмо доставлено'
+            status = "success"
+            response = "Письмо доставлено"
         except Exception as e:
-            status = 'failed'
+            status = "failed"
             response = str(e)
 
         MailingAttempt.objects.create(
@@ -29,6 +29,6 @@ def send_mailing(mailing):
             server_response=response,
         )
 
-    if mailing.status == 'created':
-        mailing.status = 'started'
+    if mailing.status == "created":
+        mailing.status = "started"
         mailing.save()
