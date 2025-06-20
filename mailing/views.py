@@ -1,7 +1,7 @@
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.shortcuts import render
-from mailing.models import Client, Message
+from mailing.models import Client, Message, Mailing
 
 """Главная страница"""
 def home_view(request):
@@ -62,3 +62,31 @@ class MessageDetailView(DetailView):
     model = Message
     template_name = 'mailing/message_detail.html'
     context_object_name = 'message'
+
+"""Страницы для работы с рассылками"""
+class MailingListView(ListView):
+    model = Mailing
+    template_name = 'mailing/mailing_list.html'
+    context_object_name = 'mailings'
+
+class MailingCreateView(CreateView):
+    model = Mailing
+    fields = ['start_time', 'end_time', 'status', 'message', 'clients']
+    template_name = 'mailing/mailing_form.html'
+    success_url = reverse_lazy('mailing:mailing_list')
+
+class MailingUpdateView(UpdateView):
+    model = Mailing
+    fields = ['start_time', 'end_time', 'status', 'message', 'clients']
+    template_name = 'mailing/mailing_form.html'
+    success_url = reverse_lazy('mailing:mailing_list')
+
+class MailingDeleteView(DeleteView):
+    model = Mailing
+    template_name = 'mailing/mailing_confirm_delete.html'
+    success_url = reverse_lazy('mailing:mailing_list')
+
+class MailingDetailView(DetailView):
+    model = Mailing
+    template_name = 'mailing/mailing_detail.html'
+    context_object_name = 'mailing'
