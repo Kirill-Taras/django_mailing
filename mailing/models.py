@@ -1,9 +1,8 @@
 from django.db import models
 
-"""Модель получателя рассылки"""
-
 
 class Client(models.Model):
+    """Модель получателя рассылки"""
     email = models.EmailField(unique=True, verbose_name="Email")
     full_name = models.CharField(
         max_length=50, verbose_name="ФИО", null=True, blank=True
@@ -21,10 +20,9 @@ class Client(models.Model):
         return f"{self.full_name} <{self.email}>"
 
 
-"""Модель сообщения"""
-
 
 class Message(models.Model):
+    """Модель сообщения"""
     subject = models.CharField(max_length=150, verbose_name="Тема письма")
     body = models.TextField(verbose_name="Тело письма")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
@@ -38,10 +36,8 @@ class Message(models.Model):
         return self.subject
 
 
-"""Модель рассылки"""
-
-
 class Mailing(models.Model):
+    """Модель рассылки"""
     STATUS_CHOICES = [
         ("created", "Создана"),
         ("started", "Запущена"),
@@ -58,6 +54,12 @@ class Mailing(models.Model):
     )
     clients = models.ManyToManyField("Client", verbose_name="Получатели")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    owner = models.ForeignKey(
+        'users.User',
+        on_delete=models.CASCADE,
+        verbose_name="Владелец",
+        null=True
+    )
 
     class Meta:
         verbose_name = "Рассылка"
@@ -68,10 +70,8 @@ class Mailing(models.Model):
         return f"Рассылка #{self.id} ({self.get_status_display()})"
 
 
-"""Модель попытки рассылки"""
-
-
 class MailingAttempt(models.Model):
+    """Модель попытки рассылки"""
     STATUS_CHOICES = [
         ("success", "Успешно"),
         ("failed", "Не успешно"),

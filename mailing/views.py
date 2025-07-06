@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import (
     ListView,
@@ -7,14 +8,13 @@ from django.views.generic import (
     DeleteView,
 )
 from django.shortcuts import render, get_object_or_404, redirect
-from mailing.models import Client, Message, Mailing
+from mailing.models import Client, Message, Mailing, MailingAttempt
 from mailing.services import send_mailing
 from django.contrib import messages
 
-"""Главная страница"""
-
 
 def home_view(request):
+    """Главная страница"""
     total_mailings = Mailing.objects.count()
     active_mailings = Mailing.objects.filter(status="started").count()
     unique_clients = Client.objects.distinct().count()
@@ -27,9 +27,7 @@ def home_view(request):
     return render(request, "home.html", context)
 
 
-"""Страницы для работы с клиентами"""
-
-
+#Страницы для работы с клиентами
 class ClientListView(ListView):
     model = Client
     template_name = "mailing/client_list.html"
@@ -62,9 +60,7 @@ class ClientDetailView(DetailView):
     context_object_name = "client"
 
 
-"""Страницы для работы с сообщениями"""
-
-
+#Страницы для работы с сообщениями
 class MessageListView(ListView):
     model = Message
     template_name = "mailing/message_list.html"
@@ -97,9 +93,7 @@ class MessageDetailView(DetailView):
     context_object_name = "message"
 
 
-"""Страницы для работы с рассылками"""
-
-
+#Страницы для работы с рассылками
 class MailingListView(ListView):
     model = Mailing
     template_name = "mailing/mailing_list.html"
@@ -132,15 +126,56 @@ class MailingDetailView(DetailView):
     context_object_name = "mailing"
 
 
-"""Функция для отправки рассылки"""
-
-
 def send_mailing_view(request, pk):
+    """Функция для отправки рассылки"""
     mailing = get_object_or_404(Mailing, pk=pk)
     if mailing.status in ["created", "started"]:
-        try:
-            send_mailing(mailing)
-            messages.success(request, "Рассылка успешно отправлена!")
-        except Exception as e:
-            messages.error(request, f"Ошибка: {e}")
+        for client in mailing.clients.all():
+            try:
+                result = send_mailing(mailing, client)
+                MailingAttempt.objects.create(
+                    mailing=mailing,
+                    client=client,
+                    status='success',
+                    server_response=result
+                )
+            except Exception as e:
+                MailingAttempt.objects.create(
+                    mailing=mailing,
+                    client=client,
+                    status='failed',
+                    server_response=str(e)
+                )
+        messages.success(request, "Рассылка обработана! Результаты в логах.")
     return redirect("mailing:mailing_detail", pk=pk)
+
+
+class StatisticsView(LoginRequiredMixin, ListView):
+    """Страница для статистики"""
+    model = MailingAttempt
+    template_name = 'mailing/statistics.html'
+    context_object_name = 'stats'
+
+    def get_queryset(self):
+        return Mailing.objects.filter(owner=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        mailings = self.get_queryset()
+
+        context.update({
+            'total_mailings': mailings.count(),
+            'active_mailings': mailings.filter(status='started').count(),
+            'success_count': MailingAttempt.objects.filter(
+                mailing__in=mailings,
+                status='success'
+            ).count(),
+            'failed_count': MailingAttempt.objects.filter(
+                mailing__in=mailings,
+                status='failed'
+            ).count(),
+            'recent_attempts': MailingAttempt.objects.filter(
+                mailing__in=mailings
+            ).order_by('-attempt_time')[:10]
+        })
+        return context

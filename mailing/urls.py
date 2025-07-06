@@ -19,6 +19,7 @@ from .views import (
     MailingDeleteView,
     MailingDetailView,
     send_mailing_view,
+    StatisticsView,
 )
 
 app_name = MailingConfig.name
@@ -50,4 +51,6 @@ urlpatterns = [
     path("mailings/<int:pk>/", MailingDetailView.as_view(), name="mailing_detail"),
     # Страница для отправки рассылки
     path("mailings/<int:pk>/send/", send_mailing_view, name="mailing_send"),
+    # Страница для статистики
+    path('statistics/', StatisticsView.as_view(), name='statistics'),
 ]
