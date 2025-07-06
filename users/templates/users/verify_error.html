@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="alert alert-danger">
+        <h4>Ошибка активации</h4>
+        <p>Ссылка недействительна или срок её действия истек.</p>
+      <p>
+    <a href="{% url 'users:resend_activation' %}" class="alert-link">
+        Отправить письмо с подтверждением повторно
+    </a>
+</p>
+    </div>
+</div>
+{% endblock %}
