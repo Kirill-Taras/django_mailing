@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Статистика рассылок</h2>
+
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Всего рассылок</h5>
+                    <p class="display-4">{{ total_mailings }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Успешных</h5>
+                    <p class="display-4">{{ success_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Ошибок</h5>
+                    <p class="display-4">{{ failed_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Активных</h5>
+                    <p class="display-4">{{ active_mailings }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mt-5">Последние попытки</h3>
+    <table class="table table-hover mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Дата</th>
+                <th>Рассылка</th>
+                <th>Клиент</th>
+                <th>Статус</th>
+                <th>Ответ сервера</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for attempt in recent_attempts %}
+            <tr class="{% if attempt.status == 'success' %}table-success{% else %}table-danger{% endif %}">
+                <td>{{ attempt.attempt_time|date:"d.m.Y H:i" }}</td>
+                <td>{{ attempt.mailing }}</td>
+                <td>{{ attempt.client }}</td>
+                <td>{{ attempt.get_status_display }}</td>
+                <td>{{ attempt.server_response|default:"-"|truncatechars:50 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
