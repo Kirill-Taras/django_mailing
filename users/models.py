@@ -31,6 +31,10 @@ class User(AbstractUser):
         ordering = ["full_name"]
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
-
+        permissions = [
+            # Права для менеджеров
+            ("can_view_users", "Может просматривать список пользователей"),
+            ("can_block_user", "Может блокировать пользователей"),
+        ]
     def __str__(self):
         return self.email

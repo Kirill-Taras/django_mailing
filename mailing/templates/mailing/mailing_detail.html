@@ -48,4 +48,11 @@
     <a href="{% url 'mailing:mailing_delete' mailing.pk %}" class="btn btn-danger">🗑️ Удалить</a>
     <a href="{% url 'mailing:mailing_list' %}" class="btn btn-secondary">← Назад</a>
 </div>
+{% if perms.mailing.can_disable_mailing %}
+<hr>
+<form action="{% url 'mailing:disable_mailing' mailing.id %}" method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Отключить рассылку</button>
+</form>
+{% endif %}
 {% endblock %}

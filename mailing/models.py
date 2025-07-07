@@ -10,11 +10,16 @@ class Client(models.Model):
     comment = models.TextField(
         max_length=150, verbose_name="Комментарий", blank=True, null=True
     )
+    owner = models.ForeignKey('users.User', on_delete=models.CASCADE, null=True, verbose_name="Владелец")
 
     class Meta:
         ordering = ["full_name"]
         verbose_name = "Клиент"
         verbose_name_plural = "Клиенты"
+        permissions = [
+            # Права для менеджеров
+            ("can_view_all_clients", "Может просматривать всех клиентов"),
+        ]
 
     def __str__(self):
         return f"{self.full_name} <{self.email}>"
@@ -65,6 +70,11 @@ class Mailing(models.Model):
         verbose_name = "Рассылка"
         verbose_name_plural = "Рассылки"
         ordering = ["-created_at"]
+        permissions = [
+            # Права для менеджеров
+            ("can_disable_mailing", "Может отключать рассылки"),
+            ("can_view_all_mailings", "Может просматривать все рассылки"),
+        ]
 
     def __str__(self):
         return f"Рассылка #{self.id} ({self.get_status_display()})"
