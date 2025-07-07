@@ -2,6 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy
 from django.views import View
+from django.core.cache import cache
+from django.views.decorators.cache import cache_page
 from django.views.generic import (
     ListView,
     CreateView,
@@ -19,6 +21,7 @@ from django.contrib import messages
 from users.models import User
 
 
+@cache_page(60 * 15)
 def home_view(request):
     """Главная страница"""
     total_mailings = Mailing.objects.count()
@@ -40,9 +43,16 @@ class ClientListView(LoginRequiredMixin, ListView):
     context_object_name = "clients"
 
     def get_queryset(self):
-        if self.request.user.has_perm('mailing.can_view_all_clients'):
-            return Client.objects.all()
-        return Client.objects.filter(owner=self.request.user)
+        cache_key = f'clients_{self.request.user.id}'
+        queryset = cache.get(cache_key)
+
+        if not queryset:
+            if self.request.user.has_perm('mailing.can_view_all_clients'):
+                queryset = Client.objects.all()
+            else:
+                queryset = Client.objects.filter(owner=self.request.user)
+            cache.set(cache_key, queryset, 60 * 15)
+        return queryset
 
 
 class ClientCreateView(OwnerRequiredMixin, LoginRequiredMixin, CreateView):
