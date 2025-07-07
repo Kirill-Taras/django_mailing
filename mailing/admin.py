@@ -10,17 +10,17 @@ class ClientAdmin(admin.ModelAdmin):
 
 @admin.register(Mailing)
 class MailingAdmin(admin.ModelAdmin):
-    list_display = ('id', 'status', 'owner')
-    list_filter = ('status', 'owner')
-    actions = ['disable_mailings']
+    list_display = ("id", "status", "owner")
+    list_filter = ("status", "owner")
+    actions = ["disable_mailings"]
 
     def disable_mailings(self, request, queryset):
-        queryset.update(status='completed')
+        queryset.update(status="completed")
 
     disable_mailings.short_description = "Отключить выбранные рассылки"
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        if not request.user.has_perm('mailing.can_view_all_mailings'):
+        if not request.user.has_perm("mailing.can_view_all_mailings"):
             return qs.filter(owner=request.user)
         return qs

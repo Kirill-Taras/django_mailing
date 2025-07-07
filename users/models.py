@@ -20,9 +20,9 @@ class User(AbstractUser):
     verification_token = models.CharField(
         max_length=100, blank=True, null=True, verbose_name="Токен верификации"
     )
-    verification_token_created = models.DateTimeField(auto_now_add=True,
-    null=True,
-    verbose_name="Дата создания токена")
+    verification_token_created = models.DateTimeField(
+        auto_now_add=True, null=True, verbose_name="Дата создания токена"
+    )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
@@ -36,5 +36,6 @@ class User(AbstractUser):
             ("can_view_users", "Может просматривать список пользователей"),
             ("can_block_user", "Может блокировать пользователей"),
         ]
+
     def __str__(self):
         return self.email

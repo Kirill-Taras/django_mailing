@@ -19,7 +19,10 @@ from .views import (
     MailingDeleteView,
     MailingDetailView,
     send_mailing_view,
-    StatisticsView, UsersListView, BlockUserView, DisableMailingView,
+    StatisticsView,
+    UsersListView,
+    BlockUserView,
+    DisableMailingView,
 )
 
 app_name = MailingConfig.name
@@ -52,11 +55,15 @@ urlpatterns = [
     # Страница для отправки рассылки
     path("mailings/<int:pk>/send/", send_mailing_view, name="mailing_send"),
     # Страница для статистики
-    path('statistics/', StatisticsView.as_view(), name='statistics'),
+    path("statistics/", StatisticsView.as_view(), name="statistics"),
     # Страница для отключения рассылки
-    path('mailings/<int:pk>/disable/', DisableMailingView.as_view(), name='disable_mailing'),
+    path(
+        "mailings/<int:pk>/disable/",
+        DisableMailingView.as_view(),
+        name="disable_mailing",
+    ),
     # Страница для блокировки пользователя
-    path('users/<int:user_id>/block/', BlockUserView.as_view(), name='block_user'),
+    path("users/<int:user_id>/block/", BlockUserView.as_view(), name="block_user"),
     # Страница для списка пользователей
-    path('users/', UsersListView.as_view(), name='users_list'),
+    path("users/", UsersListView.as_view(), name="users_list"),
 ]
