@@ -11,28 +11,40 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'mailing:home' %}">Главная</a>
                         </li>
+                        {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href= >Статистика</a>
+                            <a class="nav-link" href="{% url 'mailing:mailing_list' %}">📨 Рассылки</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'mailing:statistics' %}">📊 Статистика</a>
+                        </li>
+                        {% endif %}
                     </ul>
                     <ul class="navbar-nav">
                         {% if user.is_authenticated %}
-<li class="nav-item">
-    <form method="post" action="{% url 'users:logout' %}">
-        {% csrf_token %}
-        <button type="submit" class="nav-link btn btn-link" style="display: inline; border: none; background: none; cursor: pointer;">
-            Выход
-        </button>
-    </form>
-</li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'mailing:mailing_list' %}" title="Мои рассылки">
+                                <i class="bi bi-envelope"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <form method="post" action="{% url 'users:logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="nav-link btn btn-link"
+                                        style="display: inline; border: none; background: none; cursor: pointer;"
+                                        title="Выйти">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                </button>
+                            </form>
+                        </li>
                         {% else %}
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'users:login' %}">Вход</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'users:register' %}">Регистрация</a>
-        </li>
-    {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:login' %}">Вход</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'users:register' %}">Регистрация</a>
+                        </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

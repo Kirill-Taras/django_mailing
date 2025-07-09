@@ -4,26 +4,19 @@
     <div class="slogan text-center mb-5">
         <h1>MailSender — удобный инструмент для email-рассылок</h1>
         <p class="lead">Просто. Надежно. Эффективно.</p>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="stat-block text-center p-4 bg-light rounded">
-                <h3>{{ total_mailings }}</h3>
-                <p>Всего рассылок</p>
-            </div>
+        {% if user.is_authenticated %}
+        <div class="mt-4">
+            <a href="{% url 'mailing:mailing_list' %}" class="btn btn-primary btn-lg me-3">
+                <i class="bi bi-envelope"></i> Мои рассылки
+            </a>
+            <a href="{% url 'mailing:mailing_add' %}" class="btn btn-success btn-lg">
+                <i class="bi bi-plus-circle"></i> Создать рассылку
+            </a>
         </div>
-        <div class="col-md-4">
-            <div class="stat-block text-center p-4 bg-light rounded">
-                <h3>{{ active_mailings }}</h3>
-                <p>Активных рассылок</p>
-            </div>
+        {% else %}
+        <div class="mt-4">
         </div>
-        <div class="col-md-4">
-            <div class="stat-block text-center p-4 bg-light rounded">
-                <h3>{{ unique_clients }}</h3>
-                <p>Уникальных получателей</p>
-            </div>
-        </div>
+        {% endif %}
     </div>
     <div class="row mt-5">
         <div class="col-md-6">

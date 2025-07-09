@@ -130,7 +130,7 @@ class MailingListView(OwnerRequiredMixin, LoginRequiredMixin, ListView):
         return Mailing.objects.filter(owner=self.request.user)
 
 
-class MailingCreateView(OwnerRequiredMixin, LoginRequiredMixin, CreateView):
+class MailingCreateView(LoginRequiredMixin, CreateView):
     model = Mailing
     fields = ["start_time", "end_time", "status", "message", "clients"]
     template_name = "mailing/mailing_form.html"

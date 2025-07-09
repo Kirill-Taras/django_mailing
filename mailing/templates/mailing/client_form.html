@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container mt-4">
-    <h2>{% if client %}Редактировать клиента{% else %}Добавить клиента{% endif %}</h2>
+    <h2>{% if form.instance.pk %}Редактировать клиента{% else %}Добавить клиента{% endif %}</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
