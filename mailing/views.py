@@ -37,6 +37,7 @@ def home_view(request):
 
 
 # Страницы для работы с клиентами
+@cache_page(60 * 15)
 class ClientListView(LoginRequiredMixin, ListView):
     model = Client
     template_name = "mailing/client_list.html"
@@ -86,6 +87,7 @@ class ClientDetailView(OwnerRequiredMixin, LoginRequiredMixin, DetailView):
 
 
 # Страницы для работы с сообщениями
+@cache_page(60 * 15)
 class MessageListView(LoginRequiredMixin, ListView):
     model = Message
     template_name = "mailing/message_list.html"
@@ -119,6 +121,7 @@ class MessageDetailView(LoginRequiredMixin, DetailView):
 
 
 # Страницы для работы с рассылками
+@cache_page(60 * 15)
 class MailingListView(OwnerRequiredMixin, LoginRequiredMixin, ListView):
     model = Mailing
     template_name = "mailing/mailing_list.html"
