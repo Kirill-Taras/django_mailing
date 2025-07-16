@@ -19,6 +19,9 @@ from mailing.services import send_mailing
 from django.contrib import messages
 
 from users.models import User
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @cache_page(60 * 15)
@@ -177,6 +180,7 @@ def send_mailing_view(request, pk):
                     status="success",
                     server_response=result,
                 )
+                logger.info(f"Пользователь {request.user} отправил рассылку #{mailing.id}")
             except Exception as e:
                 MailingAttempt.objects.create(
                     mailing=mailing,
@@ -184,6 +188,7 @@ def send_mailing_view(request, pk):
                     status="failed",
                     server_response=str(e),
                 )
+                logger.error(f"Ошибка отправки: {e}")
         messages.success(request, "Рассылка обработана! Результаты в логах.")
     return redirect("mailing:mailing_detail", pk=pk)
 
