@@ -14,10 +14,11 @@
                         {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'mailing:mailing_list' %}">📨 Рассылки</a>
-                        </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'mailing:statistics' %}">📊 Статистика</a>
-                        </li>
+    <a class="nav-link" href="{% url 'mailing:reports' %}">
+        <i class="bi bi-bar-chart"></i> Отчёты
+    </a>
+</li>
                         {% endif %}
                     </ul>
                     <ul class="navbar-nav">

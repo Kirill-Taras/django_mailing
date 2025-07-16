@@ -180,7 +180,9 @@ def send_mailing_view(request, pk):
                     status="success",
                     server_response=result,
                 )
-                logger.info(f"Пользователь {request.user} отправил рассылку #{mailing.id}")
+                logger.info(
+                    f"Пользователь {request.user} отправил рассылку #{mailing.id}"
+                )
             except Exception as e:
                 MailingAttempt.objects.create(
                     mailing=mailing,
@@ -201,25 +203,32 @@ class StatisticsView(LoginRequiredMixin, ListView):
     context_object_name = "stats"
 
     def get_queryset(self):
-        return Mailing.objects.filter(owner=self.request.user)
+        queryset = (
+            MailingAttempt.objects.filter(mailing__owner=self.request.user)
+            .select_related("mailing", "client")
+            .order_by("-created_at")
+        )
+
+        # Фильтрация по статусу
+        if status := self.request.GET.get("status"):
+            queryset = queryset.filter(status=status)
+
+        # Фильтрация по дате
+        if date := self.request.GET.get("date"):
+            queryset = queryset.filter(attempt_time__date=date)
+
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        mailings = self.get_queryset()
+        attempts = self.get_queryset()
 
         context.update(
             {
-                "total_mailings": mailings.count(),
-                "active_mailings": mailings.filter(status="started").count(),
-                "success_count": MailingAttempt.objects.filter(
-                    mailing__in=mailings, status="success"
-                ).count(),
-                "failed_count": MailingAttempt.objects.filter(
-                    mailing__in=mailings, status="failed"
-                ).count(),
-                "recent_attempts": MailingAttempt.objects.filter(
-                    mailing__in=mailings
-                ).order_by("-attempt_time")[:10],
+                "total_count": attempts.count(),
+                "success_count": attempts.filter(status="success").count(),
+                "failed_count": attempts.filter(status="failed").count(),
+                "mailings": Mailing.objects.filter(owner=self.request.user),
             }
         )
         return context

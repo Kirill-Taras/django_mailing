@@ -10,9 +10,9 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         # Добавляем опциональный аргумент --users для указания email
         parser.add_argument(
-            '--users',
-            nargs='+',
-            help='Список username пользователей для добавления в группу',
+            "--users",
+            nargs="+",
+            help="Список username пользователей для добавления в группу",
         )
 
     def handle(self, *args, **options):
@@ -25,13 +25,16 @@ class Command(BaseCommand):
         group.permissions.set(permissions)
 
         # Добавляем пользователей (если указаны)
-        if options['users']:
-            users = User.objects.filter(email__in=options['users'])
+        if options["users"]:
+            users = User.objects.filter(email__in=options["users"])
             group.user_set.add(*users)
             self.stdout.write(
-                self.style.SUCCESS(f'Добавлено пользователей: {users.count()}'))
+                self.style.SUCCESS(f"Добавлено пользователей: {users.count()}")
+            )
         else:
             self.stdout.write(
-                self.style.WARNING('Пользователи не указаны (используйте --users)'))
+                self.style.WARNING("Пользователи не указаны (используйте --users)")
+            )
             self.stdout.write(
-                self.style.SUCCESS('Группа "Менеджеры" готова! Права: рассылки'))
+                self.style.SUCCESS('Группа "Менеджеры" готова! Права: рассылки')
+            )
