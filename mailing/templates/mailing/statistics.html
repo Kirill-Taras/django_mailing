@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Отчёты по рассылкам</h1>
+
+    <form method="get" class="mb-4">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <select name="status" class="form-select">
+                    <option value="">Все статусы</option>
+                    <option value="success" {% if request.GET.status == 'success' %}selected{% endif %}>Успешные</option>
+                    <option value="failed" {% if request.GET.status == 'failed' %}selected{% endif %}>Ошибки</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <input type="date" name="date" class="form-control" value="{{ request.GET.date }}">
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary">Фильтровать</button>
+                <a href="{% url 'mailing:reports' %}" class="btn btn-outline-secondary">Сбросить</a>
+            </div>
+        </div>
+    </form>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 class="card-title">Всего отправок</h5>
+                    <p class="display-6">{{ total_count }}</p>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="card-title text-success">Успешных</h5>
+                    <p class="display-6 text-success">{{ success_count }}</p>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="card-title text-danger">Ошибок</h5>
+                    <p class="display-6 text-danger">{{ failed_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Рассылка</th>
+                    <th>Клиент</th>
+                    <th>Статус</th>
+                    <th>Ответ сервера</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for attempt in attempts %}
+                <tr>
+                    <td>{{ attempt.attempt_time|date:"d.m.Y H:i" }}</td>
+                    <td>{{ attempt.mailing }}</td>
+                    <td>{{ attempt.client.full_name|default:attempt.client.email }}</td>
+                    <td>
+                        <span class="badge bg-{% if attempt.status == 'success' %}success{% else %}danger{% endif %}">
+                            {{ attempt.get_status_display }}
+                        </span>
+                    </td>
+                    <td>{{ attempt.server_response|truncatechars:50 }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">Нет данных</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% include 'includes/pagination.html' %}
+</div>
+{% endblock %}

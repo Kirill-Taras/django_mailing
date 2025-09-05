@@ -1,0 +1,116 @@
+[
+  {
+    "model": "mailing.client",
+    "pk": 1,
+    "fields": {
+      "email": "client1@example.com",
+      "full_name": "Иванов Иван",
+      "comment": "Первый клиент"
+    }
+  },
+  {
+    "model": "mailing.client",
+    "pk": 2,
+    "fields": {
+      "email": "client2@example.com",
+      "full_name": "Петров Петр",
+      "comment": "Второй клиент"
+    }
+  },
+  {
+    "model": "mailing.client",
+    "pk": 3,
+    "fields": {
+      "email": "client3@example.com",
+      "full_name": "Сидорова Анна",
+      "comment": "Третий клиент"
+    }
+  },
+  {
+    "model": "mailing.message",
+    "pk": 1,
+    "fields": {
+      "subject": "Тестовое сообщение 1",
+      "body": "Привет! Это тестовое сообщение.",
+      "created_at": "2024-01-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "mailing.message",
+    "pk": 2,
+    "fields": {
+      "subject": "Акционное предложение",
+      "body": "Только сегодня скидка 20%!",
+      "created_at": "2024-01-02T12:00:00Z"
+    }
+  },
+  {
+    "model": "mailing.mailing",
+    "pk": 1,
+    "fields": {
+      "start_time": "2024-01-01T09:00:00Z",
+      "end_time": "2024-12-31T23:59:00Z",
+      "status": "started",
+      "message": 1,
+      "clients": [1, 2],
+      "created_at": "2024-01-01T08:00:00Z"
+    }
+  },
+  {
+    "model": "mailing.mailing",
+    "pk": 2,
+    "fields": {
+      "start_time": "2024-01-02T10:00:00Z",
+      "end_time": "2024-01-03T10:00:00Z",
+      "status": "completed",
+      "message": 2,
+      "clients": [2, 3],
+      "created_at": "2024-01-02T09:00:00Z"
+    }
+  },
+  {
+    "model": "mailing.mailing",
+    "pk": 3,
+    "fields": {
+      "start_time": "2024-02-01T00:00:00Z",
+      "end_time": "2024-02-02T00:00:00Z",
+      "status": "created",
+      "message": 1,
+      "clients": [1, 3],
+      "created_at": "2024-01-15T12:00:00Z"
+    }
+  },
+  {
+    "model": "mailing.mailingattempt",
+    "pk": 1,
+    "fields": {
+      "mailing": 1,
+      "client": 1,
+      "attempt_time": "2024-01-01T10:01:00Z",
+      "status": "success",
+      "server_response": "250 OK"
+    }
+  },
+  {
+    "model": "mailing.mailingattempt",
+    "pk": 2,
+    "fields": {
+      "mailing": 1,
+      "client": 2,
+      "attempt_time": "2024-01-01T10:02:00Z",
+      "status": "failed",
+      "server_response": "550 Mailbox not found"
+    }
+  },
+  {
+    "model": "mailing.mailingattempt",
+    "pk": 3,
+    "fields": {
+      "mailing": 2,
+      "client": 2,
+      "attempt_time": "2024-01-02T11:00:00Z",
+      "status": "success",
+      "server_response": "250 OK"
+    }
+  }
+]

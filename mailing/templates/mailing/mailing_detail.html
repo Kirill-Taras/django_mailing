@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    <h2>Рассылка #{{ mailing.id }}</h2>
+    <p><strong>Статус:</strong> {{ mailing.get_status_display }}</p>
+    <p><strong>Сообщение:</strong> {{ mailing.message.subject }}</p>
+    <p><strong>Текст:</strong> {{ mailing.message.body }}</p>
+    <p><strong>Дата начала:</strong> {{ mailing.start_time|date:"d.m.Y H:i" }}</p>
+    <p><strong>Дата окончания:</strong> {{ mailing.end_time|date:"d.m.Y H:i" }}</p>
+    <p><strong>Получатели:</strong></p>
+    <ul>
+        {% for client in mailing.clients.all %}
+        <li>{{ client.full_name }} ({{ client.email }})</li>
+        {% endfor %}
+    </ul>
+    <div class="mt-4">
+    <h4>История попыток</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Клиент</th>
+                <th>Статус</th>
+                <th>Ответ сервера</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for attempt in mailing.attempts.all %}
+            <tr class="{% if attempt.status == 'success' %}table-success{% else %}table-danger{% endif %}">
+                <td>{{ attempt.attempt_time|date:"d.m.Y H:i" }}</td>
+                <td>{{ attempt.client.full_name }}</td>
+                <td>{{ attempt.get_status_display }}</td>
+                <td>{{ attempt.server_response|default:"-" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">Попыток не было.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+    <a href="{% url 'mailing:mailing_send' mailing.pk %}" class="btn btn-warning">📨 Отправить сейчас</a>
+    <a href="{% url 'mailing:mailing_edit' mailing.pk %}" class="btn btn-primary">✏️ Редактировать</a>
+    <a href="{% url 'mailing:mailing_delete' mailing.pk %}" class="btn btn-danger">🗑️ Удалить</a>
+    <a href="{% url 'mailing:mailing_list' %}" class="btn btn-secondary">← Назад</a>
+</div>
+{% if perms.mailing.can_disable_mailing %}
+<hr>
+<form action="{% url 'mailing:disable_mailing' mailing.id %}" method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Отключить рассылку</button>
+</form>
+{% endif %}
+{% endblock %}
